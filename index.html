@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eyeglasses Price Calculator</title>
+    <style>
+        /* Custom font for a clean look */
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(to bottom right, #e0f2fe, #e9d5ff); /* bg-gradient-to-br from-blue-100 to-purple-200 */
+        }
+
+        .container {
+            max-width: 960px; /* max-w-4xl */
+            width: 100%; /* w-full */
+            background-color: #ffffff; /* bg-white */
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); /* shadow-xl */
+            border-radius: 12px; /* rounded-xl */
+            padding: 24px; /* p-6 */
+            display: flex;
+            flex-direction: column; /* flex-col */
+        }
+
+        @media (min-width: 768px) { /* md breakpoint */
+            .container {
+                flex-direction: row; /* md:flex-row */
+            }
+        }
+
+        .left-panel, .right-panel {
+            padding: 16px; /* p-4 */
+            border-radius: 8px; /* rounded-lg */
+            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06); /* shadow-inner */
+        }
+
+        .left-panel {
+            background-color: #eff6ff; /* bg-blue-50 */
+            margin-bottom: 24px; /* mb-6 */
+        }
+
+        @media (min-width: 768px) { /* md breakpoint */
+            .left-panel {
+                width: 33.333333%; /* md:w-1/3 */
+                margin-right: 16px; /* md:mr-4 */
+                margin-bottom: 0; /* md:mb-0 */
+            }
+        }
+
+        .right-panel {
+            background-color: #f9fafb; /* bg-gray-50 */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* flex-col with items-center justify-center removed from placeholder */
+            flex-grow: 1; /* fills remaining space */
+        }
+
+        @media (min-width: 768px) { /* md breakpoint */
+            .right-panel {
+                width: 66.666667%; /* md:w-2/3 */
+            }
+        }
+
+        h2 {
+            font-size: 1.5rem; /* text-2xl */
+            font-weight: 700; /* font-bold */
+            color: #1e40af; /* text-blue-800 */
+            margin-bottom: 16px; /* mb-4 */
+            padding-bottom: 8px; /* pb-2 */
+            border-bottom: 2px solid #93c5fd; /* border-b-2 border-blue-300 */
+        }
+
+        .right-panel h2 {
+            color: #374151; /* text-gray-800 */
+            border-bottom-color: #9ca3af; /* border-gray-400 */
+        }
+
+        .mb-6 {
+            margin-bottom: 24px; /* mb-6 */
+        }
+
+        label {
+            display: block; /* block */
+            color: #374151; /* text-gray-700 */
+            font-size: 0.875rem; /* text-sm */
+            font-weight: 600; /* font-semibold */
+            margin-bottom: 8px; /* mb-2 */
+        }
+
+        input[type="text"] {
+            width: 90%; /* w-full */
+            padding: 8px 16px; /* px-4 py-2 */
+            border: 1px solid #a0a0a0; /* Changed border color for better visibility */
+            border-radius: 6px; /* rounded-md */
+            outline: none; /* focus:outline-none */
+            font-size: 1.125rem; /* text-lg */
+            color: #374151; /* text-gray-800 */
+        }
+
+        input[type="text"]:focus {
+            border-color: #3b82f6; /* Changed border color on focus to match box-shadow */
+            box-shadow: 0 0 0 2px #3b82f6; /* focus:ring-2 focus:ring-blue-500 */
+        }
+
+        .mt-8 {
+            margin-top: 32px; /* mt-8 */
+        }
+
+        .pt-4 {
+            padding-top: 16px; /* pt-4 */
+        }
+
+        .border-t-2 {
+            border-top: 2px solid #93c5fd; /* border-t-2 border-blue-300 */
+        }
+
+        h3 {
+            font-size: 1.25rem; /* text-xl */
+            font-weight: 700; /* font-bold */
+            color: #1e40af; /* text-blue-800 */
+            margin-bottom: 8px; /* mb-2 */
+        }
+
+        #totalPrice {
+            font-size: 2.25rem; /* text-4xl */
+            font-weight: 800; /* font-extrabold */
+            color: #2563eb; /* text-blue-600 */
+            margin-bottom: 24px; /* mb-6 */
+        }
+
+        .discount-buttons-grid {
+            display: flex;
+            flex-wrap: wrap; /* flex-wrap */
+            justify-content: space-between; /* justify-between */
+            gap: 8px; /* gap-2 */
+        }
+
+        .discount-button {
+            flex: 1; /* flex-1 */
+            min-width: 80px; /* min-w-[80px] */
+            padding: 12px 8px; /* py-3 px-2 */
+            border-radius: 8px; /* rounded-lg */
+            color: #ffffff; /* text-white */
+            font-weight: 600; /* font-semibold */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1); /* shadow-md */
+            outline: none; /* focus:outline-none */
+            transition: all 0.2s ease-in-out; /* transition duration-200 ease-in-out */
+            transform: translateY(0); /* transform hover:-translate-y-0.5 */
+            border: none; /* No default border */
+            cursor: pointer;
+            font-size: 0.875rem; /* text-sm */
+        }
+
+        .discount-button:hover {
+            transform: translateY(-2px); /* hover:-translate-y-0.5 */
+        }
+
+        .discount-button.active {
+            box-shadow: 0 0 0 4px #3b82f6, 0 0 0 6px rgba(59, 130, 246, 0.5); /* ring-4 ring-offset-2 ring-blue-500 */
+        }
+
+        #btn500 {
+            background-color: #ef4444; /* bg-red-500 */
+        }
+        #btn500:hover {
+            background-color: #dc2626; /* hover:bg-red-600 */
+        }
+        #btn500.active {
+            background-color: #dc2626; /* bg-red-600 for active state */
+        }
+
+        #btn1000 {
+            background-color: #3b82f6; /* bg-blue-500 */
+        }
+        #btn1000:hover {
+            background-color: #2563eb; /* hover:bg-blue-600 */
+        }
+        #btn1000.active {
+            background-color: #2563eb; /* bg-blue-600 for active state */
+        }
+
+        #btnPWDSC {
+            background-color: #22c55e; /* bg-green-500 */
+        }
+        #btnPWDSC:hover {
+            background-color: #16a34a; /* hover:bg-green-600 */
+        }
+        #btnPWDSC.active {
+            background-color: #16a34a; /* bg-green-600 for active state */
+        }
+
+        #clearDiscount {
+            width: 100%; /* w-full */
+            background-color: #e5e7eb; /* bg-gray-200 */
+            color: #374151; /* text-gray-700 */
+            font-size: 0.875rem; /* text-sm */
+            margin-top: 12px; /* mt-3, adjusted from space-y-3 */
+        }
+        #clearDiscount:hover {
+            background-color: #d1d5db; /* hover:bg-gray-300 */
+        }
+
+        .lens-options-grid {
+            display: grid; /* grid */
+            grid-template-columns: repeat(3, minmax(0, 1fr)); /* grid-cols-3 */
+            gap: 16px; /* gap-4 */
+            padding: 8px; /* p-2 */
+            margin-bottom: 16px; /* mb-4 */
+        }
+
+        .lens-option-button {
+            padding: 12px 8px; /* py-3 px-2 */
+            border-radius: 8px; /* rounded-lg */
+            font-weight: 600; /* font-semibold */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1); /* shadow-md */
+            outline: none; /* focus:outline-none */
+            transition: all 0.2s ease-in-out; /* transition duration-200 ease-in-out */
+            transform: translateY(0); /* transform hover:-translate-y-0.5 */
+            border: none; /* No default border */
+            cursor: pointer;
+            font-size: 0.875rem; /* text-sm */
+            background-color: #ffffff; /* Default: white */
+            color: #374151; /* text-gray-800 */
+        }
+
+        .lens-option-button:hover {
+            background-color: #f3f4f6; /* Slightly darker white on hover */
+            transform: translateY(-2px); /* hover:-translate-y-0.5 */
+        }
+
+        .lens-option-button.active {
+            background-color: #d1d5db; /* Active: gray */
+            box-shadow: 0 0 0 4px #3b82f6, 0 0 0 6px rgba(59, 130, 246, 0.5); /* ring-4 ring-offset-2 ring-blue-500 */
+        }
+
+        #clearLensOptions {
+            width: 100%; /* w-full */
+            padding: 12px 16px; /* py-3 px-4 */
+            border-radius: 8px; /* rounded-lg */
+            color: #374151; /* text-gray-700 */
+            font-weight: 600; /* font-semibold */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1); /* shadow-md */
+            background-color: #e5e7eb; /* bg-gray-200 */
+            border: none;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            transform: translateY(0);
+            margin-top: 16px; /* mt-4 */
+        }
+
+        #clearLensOptions:hover {
+            background-color: #d1d5db; /* hover:bg-gray-300 */
+            transform: translateY(-2px);
+        }
+
+        /* Responsive adjustments for smaller screens if needed */
+        @media (min-width: 768px) {
+            .discount-button {
+                font-size: 1rem; /* md:text-base */
+            }
+            .lens-option-button {
+                font-size: 1rem; /* md:text-base */
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-100 to-purple-200 min-h-screen flex items-center justify-center p-4">
+    <div class="container">
+        <!-- Left Panel: Frame Selection and Total Price (1/3 width) -->
+        <div class="left-panel">
+            <h2>Frame Selection</h2>
+
+            <div class="mb-6">
+                <label for="framePrice">Enter Frame Price (₱):</label>
+                <input
+                    type="text"
+                    id="framePrice"
+                    placeholder="₱ 2,990"
+                    oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1'); calculateTotalPrice();"
+                >
+            </div>
+
+            <div class="mt-8 pt-4 border-t-2">
+                <h3>Total Price:</h3>
+                <p id="totalPrice">
+                    ₱0.00
+                </p>
+
+                <!-- Discount Buttons -->
+                <div class="discount-buttons-grid">
+                    <button id="btn500" class="discount-button">
+                        500
+                    </button>
+                    <button id="btn1000" class="discount-button">
+                        1000
+                    </button>
+                    <button id="btnPWDSC" class="discount-button">
+                        PWD/SC
+                    </button>
+                    <button id="clearDiscount" class="discount-button">
+                        Clear Discount
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Lens Options (2/3 width) -->
+        <div class="right-panel">
+            <h2>Lens Options & Upgrades</h2>
+
+            <!-- Grid for 12 buttons -->
+            <div class="lens-options-grid">
+                <!-- Row 1 -->
+                <button id="btnHMC" class="lens-option-button">
+                    HMC
+                </button>
+                <button id="btnBSL" class="lens-option-button">
+                    BSL
+                </button>
+                <button id="btnTRNS" class="lens-option-button">
+                    TRNS
+                </button>
+
+                <!-- Row 2 -->
+                <button id="btnTINT" class="lens-option-button">
+                    TINT
+                </button>
+                <button id="btnHCMB" class="lens-option-button">
+                    HCMB
+                </button>
+                <button id="btnTRSTYLES" class="lens-option-button">
+                    TR STYLES
+                </button>
+
+                <!-- Row 3 -->
+                <button id="btnSilver" class="lens-option-button">
+                    Silver
+                </button>
+                <button id="btnGold" class="lens-option-button">
+                    Gold
+                </button>
+                <button id="btnDiamond" class="lens-option-button">
+                    Diamond
+                </button>
+
+                <!-- Row 4 (Swapped Dia + and CT) -->
+                <button id="btnCT" class="lens-option-button">
+                    CT
+                </button>
+                <button id="btnID" class="lens-option-button">
+                    ID
+                </button>
+                <button id="btnDiaPlus" class="lens-option-button">
+                    Dia +
+                </button>
+            </div>
+
+            <!-- Clear Lens Options Button -->
+            <button id="clearLensOptions">
+                Clear All Lens Options
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Global variables for price calculation
+        let currentDiscountType = 'none'; // 'none', 'fixed500', 'fixed1000', 'pwdsc'
+        let fixedDiscountAmount = 0; // Amount for fixed discounts
+        const pwdscPercentage = 1.4; // 20% discount for PWD/SC
+        let activeDiscountButtonId = null; // Stores the ID of the currently active discount button
+
+        // Object to store the state of the right-panel buttons (active/inactive)
+        const lensOptionStates = {};
+
+        // Define prices for each lens option with the new values
+        const lensOptionPrices = {
+            'btnHMC': 0,
+            'btnBSL': 5000,
+            'btnTRNS': 5000,
+            'btnTINT': 5000,
+            'btnHCMB': 5000,
+            'btnTRSTYLES': 10000,
+            'btnSilver': 5000,
+            'btnGold': 10000,
+            'btnDiamond': 20000,
+            'btnCT': 5000, // Swapped value
+            'btnID': 5000,
+            'btnDiaPlus': 30000 // Swapped value
+        };
+
+        // Function to calculate and update the total price
+        function calculateTotalPrice() {
+            const framePriceInput = document.getElementById('framePrice');
+            const totalPriceDisplay = document.getElementById('totalPrice');
+            
+
+            let framePrice = parseFloat(framePriceInput.value) || 0;
+            let total = framePrice;
+
+            // Add prices for active lens options
+            for (const buttonId in lensOptionStates) {
+                if (lensOptionStates[buttonId]) { // If the button is active
+                    total += lensOptionPrices[buttonId] || 0; // Add its price, default to 0 if not found
+                }
+            }
+
+            // Apply discounts based on the currentDiscountType
+            if (currentDiscountType === 'fixed500') {
+                total = Math.max(0, total - fixedDiscountAmount);
+            } else if (currentDiscountType === 'fixed1000') {
+                total = Math.max(0, total - fixedDiscountAmount);
+            } else if (currentDiscountType === 'pwdsc') {
+                total = total / pwdscPercentage;
+            }
+
+            totalPriceDisplay.textContent = `₱${total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        }
+
+        // Function to set an active discount button and handle its visual state (background and border)
+        function setActiveDiscountButton(buttonIdToActivate) {
+            const discountButtonsConfig = [
+                { id: 'btn500', normalBgColor: '#ef4444', activeBgColor: '#dc2626' }, // red-500, red-600
+                { id: 'btn1000', normalBgColor: '#3b82f6', activeBgColor: '#2563eb' }, // blue-500, blue-600
+                { id: 'btnPWDSC', normalBgColor: '#22c55e', activeBgColor: '#16a34a' }, // green-500, green-600
+                { id: 'clearDiscount', normalBgColor: '#e5e7eb', activeBgColor: '#d1d5db' } // gray-200, gray-300
+            ];
+
+            discountButtonsConfig.forEach(config => {
+                const btn = document.getElementById(config.id);
+                if (btn) {
+                    btn.classList.remove('active'); // Remove active class (which handles the ring)
+                    btn.style.backgroundColor = config.normalBgColor; // Reset to normal background
+                    btn.style.color = '#ffffff'; // Ensure text color is white for colored buttons
+                    if (config.id === 'clearDiscount') {
+                        btn.style.color = '#374151'; // Specific text color for clear discount
+                    }
+
+                    if (config.id === buttonIdToActivate) {
+                        btn.classList.add('active'); // Add active class for ring
+                        btn.style.backgroundColor = config.activeBgColor; // Apply active background color
+                    }
+                }
+            });
+            activeDiscountButtonId = buttonIdToActivate; // Update the ID of the currently active button
+        }
+
+        // Initialize total price and attach event listeners on load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Left Panel Buttons
+            const btn500 = document.getElementById('btn500');
+            const btn1000 = document.getElementById('btn1000');
+            const btnPWDSC = document.getElementById('btnPWDSC');
+            const clearDiscountBtn = document.getElementById('clearDiscount');
+
+            // Apply initial background colors for discount buttons
+            btn500.style.backgroundColor = '#ef4444'; // red-500
+            btn1000.style.backgroundColor = '#3b82f6'; // blue-500
+            btnPWDSC.style.backgroundColor = '#22c55e'; // green-500
+            clearDiscountBtn.style.backgroundColor = '#e5e7eb'; // gray-200
+            clearDiscountBtn.style.color = '#374151'; // text-gray-700
+
+
+            btn500.addEventListener('click', () => {
+                if (currentDiscountType === 'fixed500') { // If already active, toggle off
+                    currentDiscountType = 'none';
+                    fixedDiscountAmount = 0;
+                    setActiveDiscountButton(null); // Clear active button visual state
+                } else {
+                    currentDiscountType = 'fixed500';
+                    fixedDiscountAmount = 500;
+                    setActiveDiscountButton('btn500'); // Set this button as active visually
+                }
+                calculateTotalPrice();
+            });
+
+            btn1000.addEventListener('click', () => {
+                if (currentDiscountType === 'fixed1000') { // If already active, toggle off
+                    currentDiscountType = 'none';
+                    fixedDiscountAmount = 0;
+                    setActiveDiscountButton(null);
+                } else {
+                    currentDiscountType = 'fixed1000';
+                    fixedDiscountAmount = 1000;
+                    setActiveDiscountButton('btn1000');
+                }
+                calculateTotalPrice();
+            });
+
+            btnPWDSC.addEventListener('click', () => {
+                if (currentDiscountType === 'pwdsc') { // If already active, toggle off
+                    currentDiscountType = 'none';
+                    fixedDiscountAmount = 0;
+                    setActiveDiscountButton(null);
+                } else {
+                    currentDiscountType = 'pwdsc';
+                    fixedDiscountAmount = 0; // Not applicable for percentage discount
+                    setActiveDiscountButton('btnPWDSC');
+                }
+                calculateTotalPrice();
+            });
+
+            clearDiscountBtn.addEventListener('click', () => {
+                currentDiscountType = 'none';
+                fixedDiscountAmount = 0;
+                setActiveDiscountButton(null); // Clear all discount buttons
+                calculateTotalPrice();
+            });
+
+            // Right Panel Buttons (Lens Options)
+            const lensOptionButtons = [
+                'btnHMC', 'btnBSL', 'btnTRNS',
+                'btnTINT', 'btnHCMB', 'btnTRSTYLES',
+                'btnSilver', 'btnGold', 'btnDiamond',
+                'btnCT', 'btnID', 'btnDiaPlus' // Updated order
+            ];
+
+            lensOptionButtons.forEach(buttonId => {
+                const button = document.getElementById(buttonId);
+                // Initialize state to inactive
+                lensOptionStates[buttonId] = false;
+
+                button.addEventListener('click', () => {
+                    // Toggle the active state
+                    lensOptionStates[buttonId] = !lensOptionStates[buttonId];
+                    // Toggle the 'active' class for visual feedback (background and border)
+                    if (lensOptionStates[buttonId]) {
+                        button.style.backgroundColor = '#d1d5db'; // gray-300
+                    } else {
+                        button.style.backgroundColor = '#ffffff'; // white
+                    }
+                    button.classList.toggle('active', lensOptionStates[buttonId]); // Toggles border
+                    // Recalculate total price
+                    calculateTotalPrice();
+                });
+            });
+
+            // Clear All Lens Options Button
+            const clearLensOptionsBtn = document.getElementById('clearLensOptions');
+            clearLensOptionsBtn.addEventListener('click', () => {
+                lensOptionButtons.forEach(buttonId => {
+                    const button = document.getElementById(buttonId);
+                    lensOptionStates[buttonId] = false; // Set state to inactive
+                    button.style.backgroundColor = '#ffffff'; // Reset to white
+                    button.classList.remove('active'); // Remove active class (and border)
+                });
+                calculateTotalPrice(); // Recalculate total price after clearing
+            });
+
+            // Initial calculation
+            calculateTotalPrice();
+        });
+    </script>
+</body>
+</html>
